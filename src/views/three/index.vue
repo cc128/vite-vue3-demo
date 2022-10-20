@@ -4,12 +4,16 @@
 备注：xxxx
 */
 <template>
-    <div class="three-box"></div>
+    <div class="three-box">
+        <three />
+    </div>
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance } from 'vue';
+// import HelloWorld from './components/HelloWorld.vue'
 
+import three from "./chartlet/index.vue"
+import { ref, reactive, getCurrentInstance } from 'vue';
 // import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router'
 // const { ctx } = getCurrentInstance()
 // defineProps({})
