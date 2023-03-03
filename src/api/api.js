@@ -5,9 +5,9 @@ const reqFn = (as, method = "get") => {
     let headers = as[2] || {}; // 请求头
     const req = () => {
         // 判断请求类型
-        let isGetUrl = (method == "get" || method == "delete");
+        let reqType = (method == "get" || method == "delete");
         // 解析参数-拼接到地址栏传参
-        if (isGetUrl && data) {
+        if (reqType && data) {
             for (let [key, value, i] of Object.entries(data)) {
                 url = url + `&${key}=${value}`;
             }
@@ -19,7 +19,7 @@ const reqFn = (as, method = "get") => {
                 'Content-Type': 'application/json',
                 ...headers
             },
-            body: (isGetUrl) ? null : JSON.stringify(data)
+            body: (reqType) ? null : JSON.stringify(data)
         }).then(res => {
             if (res.status == 404) {
                 ElMessage({
@@ -38,14 +38,13 @@ const reqFn = (as, method = "get") => {
         })
     }
     return new Promise((resolve, reject) => {
-        let AEL = () => {
+        let AEL = (e) => {
             resolve(req());
             document.removeEventListener("click", AEL)
         }
         document.addEventListener("click", AEL)
     })
 }
-
 window.$fetch = {
     get: function () {
         return reqFn(arguments, "get")

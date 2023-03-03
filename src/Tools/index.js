@@ -8,7 +8,7 @@ const baset64toFile = (dataURL, fileName, fileType) => {
     return new File([u8arr], fileName, { type: fileType || 'image/jpg' });  //返回file对象
 }
 // 图片下载
-const UpImg = (imgsrc, name) => {
+const downloadImg = (imgsrc, name) => {
     let image = new Image();
     image.setAttribute("crossOrigin", "anonymous"); //解决跨域
     image.src = imgsrc;
@@ -33,7 +33,7 @@ const UpImg = (imgsrc, name) => {
     }
 }
 // 文件下载-可下载页面文件-或接口返回文件
-const UpFile = (data, name) => {
+const downloadFile = (data, name) => {
     let setF = (f, n) => {
         var blob = new Blob([f]); //创建一个blob对象
         var a = document.createElement('a'); //创建一个<a></a>标签
@@ -54,4 +54,4 @@ const UpFile = (data, name) => {
         setF(e, name)
     }
 }
-export default { baset64toFile, UpImg, UpFile }
+export { baset64toFile, downloadImg, downloadFile }

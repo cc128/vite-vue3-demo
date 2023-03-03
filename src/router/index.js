@@ -24,10 +24,23 @@ const router = createRouter({
                     name: "canvas",
                     component: () => import("@/views/canvas/index.vue")
                 },
+                // 截屏
                 {
                     path: "/screenShot",
                     name: "screenShot",
-                    component: () => import("@/views/screenShot/index.vue")
+                    component: () => import("@/views/tool/screenShot/index.vue")
+                },
+                // 签名
+                {
+                    path: "/signature",
+                    name: "signature",
+                    component: () => import("@/views/tool/signature/index.vue")
+                },
+                // 表格
+                {
+                    path: "/table",
+                    name: "table",
+                    component: () => import("@/views/tool/table/index.vue")
                 },
             ]
         },

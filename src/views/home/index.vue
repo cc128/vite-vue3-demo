@@ -7,11 +7,11 @@
     <div class="nav-top">
         <div class="toolbar">
             <el-radio-group v-model="isCollapse" style="margin-right: 20px;">
-                <el-radio-button :label="false">打开</el-radio-button>
-                <el-radio-button :label="true">关闭</el-radio-button>
-            </el-radio-group>
-            <el-button type="primary" @click="getMsg">请求接口</el-button>
-            <!-- <el-dropdown>
+            <el-radio-button :label="false">打开</el-radio-button>
+            <el-radio-button :label="true">关闭</el-radio-button>
+        </el-radio-group>
+        <el-button type="primary" @click="getMsg">请求接口</el-button>
+        <!-- <el-dropdown>
                 <el-icon style="margin-right: 8px; margin-top: 1px">
                     <setting />
                 </el-icon>
@@ -19,11 +19,11 @@
                     <el-dropdown-menu>
                         <el-dropdown-item>View</el-dropdown-item>
                         <el-dropdown-item>Add</el-dropdown-item>
-                        <el-dropdown-item>Delete</el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
-            <span>Tom</span> -->
+                            <el-dropdown-item>Delete</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+                <span>Tom</span> -->
         </div>
     </div>
     <div class="menu-box">
@@ -39,6 +39,7 @@
                 <el-menu-item-group>
                     <el-menu-item index="canvas">移动的小球</el-menu-item>
                 </el-menu-item-group>
+
             </el-sub-menu>
             <el-menu-item index="three">
                 <el-icon>
@@ -56,8 +57,14 @@
                 <el-menu-item-group>
                     <el-menu-item index="screenShot">截屏</el-menu-item>
                 </el-menu-item-group>
+                <el-menu-item-group>
+                    <el-menu-item index="signature">签名</el-menu-item>
+                </el-menu-item-group>
+                <el-menu-item-group>
+                    <el-menu-item index="table">表格</el-menu-item>
+                </el-menu-item-group>
             </el-sub-menu>
-            
+
         </el-menu>
         <div class="content-box">
             <router-view></router-view>
@@ -95,7 +102,6 @@ const state = reactive({
 
 
 const getMsg = () => {
-    console.log($fetch)
     $fetch.post(url, p, h).then(res => {
         console.log(res, "接口返回数据")
         state.list = res;
@@ -114,6 +120,7 @@ const getMsg = () => {
 .nav-top {
     width: 100%;
     height: 60px;
+
     .toolbar {
         display: inline-flex;
         align-items: center;
@@ -134,6 +141,7 @@ const getMsg = () => {
     }
 
     .content-box {
+        width: calc(100% - 200px);
         flex: 1;
         height: calc(100% - 40px);
         padding: 20px;

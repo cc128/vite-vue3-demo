@@ -7,13 +7,13 @@
     <div class="screen-shot">
         <div>
             <el-button type="primary" @click="screenShot">开启截屏</el-button>
-            <input type="file" multiple name="" id="" @change="tools.UpFile">
+            <input type="file" multiple name="" id="" @change="downloadFile">
         </div>
         <div class="img-box">
             <div v-for="(item, i) in state.imgList" :key="i">
                 <img :src="item" class="box-shadow" alt="" srcset="">
                 <br>
-                <el-button type="primary" @click="tools.UpImg(item)">下载</el-button>
+                <el-button type="primary" @click="downloadImg(item)">下载</el-button>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
 import { ElMessage } from 'element-plus';
 import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
 import ScreenShot from "js-web-screen-shot";
-import tools from "@/Tools/index.js"
+import { baset64toFile, downloadImg, downloadFile } from "@/Tools/index.js"
 const state = reactive({ imgList: [] })
 
 
@@ -40,7 +40,7 @@ let screenShot = () => {
         completeCallback: (e) => {
             // 截图完成回调函数
             let formData = new FormData();
-            formData.append("file", tools.baset64toFile(e, "图片", "image/png"));
+            formData.append("file", baset64toFile(e, "图片", "image/png"));
             state.imgList.push(URL.createObjectURL(formData.getAll("file")[0]))
         },
         closeCallback: () => {
