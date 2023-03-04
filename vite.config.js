@@ -7,9 +7,11 @@ import path from 'path'
 import fs from 'fs'
 
 export default defineConfig({
-    plugins: [vue({
-        // reactivityTransform: true
-    })],
+    plugins: [
+        vue({
+            // reactivityTransform: true
+        }),
+    ],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -23,12 +25,19 @@ export default defineConfig({
         // },
         host: "0.0.0.0",
         port: 8080,
-        open: true
+        open: true,
+        proxy: {
+            "^/api": {
+                target: "http://47.92.100.118:81",
+                changeOrigin: true, //开启代理
+                rewrite: (path) => path.replace(/^\/api/, "")
+            }
+        }
     },
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@import "@/assets/index.scss";`
+                additionalData: `@use "@/assets/index.scss" as *;`
             }
         }
     }

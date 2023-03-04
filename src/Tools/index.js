@@ -33,9 +33,9 @@ const downloadImg = (imgsrc, name) => {
     }
 }
 // 文件下载-可下载页面文件-或接口返回文件
-const downloadFile = (data, name) => {
-    let setF = (f, n) => {
-        var blob = new Blob([f]); //创建一个blob对象
+const downloadFile = (data, name, type) => {
+    let setF = (f, n, t) => {
+        var blob = new Blob([f], { type: t || null }); //创建一个blob对象
         var a = document.createElement('a'); //创建一个<a></a>标签
         a.href = URL.createObjectURL(blob); // response is a blob
         a.download = n || "a.png"; //文件名称
@@ -47,11 +47,11 @@ const downloadFile = (data, name) => {
     if (data && data.target && data.target.files) {
         let FS = data.target.files;
         FS.forEach(e => {
-            setF(e, e.name)
+            setF(e, e.name, e.type)
         })
         data.target.value = null;
     } else {
-        setF(e, name)
+        setF(data, name, type)
     }
 }
 export { baset64toFile, downloadImg, downloadFile }

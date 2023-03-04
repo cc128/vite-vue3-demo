@@ -1,4 +1,5 @@
 import { ElMessage } from 'element-plus'
+import { downloadFile } from "../Tools/index"
 const reqFn = (as, method = "get") => {
     let url = as[0] || ""; // 请求地址
     let data = as[1] || ""; // 请求参数
@@ -13,6 +14,12 @@ const reqFn = (as, method = "get") => {
             }
             url = url.replace("&", "?")
         }
+        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxNSIsInJuU3RyIjoiRWRGVkMwZmV5VkN6NDEwcGJvTTh1QkxEcVdqMWozYnkifQ.2WNaw0KGrWWfMw-H7ZRdB5ZIkVh-lUqY8xFBzl6sO94"
+        if (!url.includes("/login")) {
+            headers.Authorization = "Bearer " + token;
+            headers.Cookie = "Admin-Token=" + token
+        }
+        let name, type;
         return fetch(import.meta.env.VITE_BASE_URL + url, {
             method: method,
             headers: {
@@ -34,15 +41,35 @@ const reqFn = (as, method = "get") => {
                     type: "error"
                 })
             }
-            return res.json()
+            name = decodeURI(res.headers.get("download-filename"));
+            type = res.headers.get("content-type");
+            if (url.includes("export")) {
+                return res.blob();
+            } else {
+                return res.json();
+            }
+
+        }).then(res => {
+            if (res.code) {
+                if (res.code != 200) {
+                    ElMessage({
+                        message: res.msg,
+                        grouping: true,
+                        type: "error"
+                    })
+                }
+                return res
+            } else {
+                downloadFile(res, name, type); //下载文件
+            }
         })
     }
     return new Promise((resolve, reject) => {
-        let AEL = (e) => {
-            resolve(req());
-            document.removeEventListener("click", AEL)
-        }
-        document.addEventListener("click", AEL)
+        //     let AEL = (e) => {
+        resolve(req());
+        //         document.removeEventListener("click", AEL)
+        //     }
+        //     document.addEventListener("click", AEL)
     })
 }
 window.$fetch = {

@@ -19,11 +19,11 @@
                     <el-dropdown-menu>
                         <el-dropdown-item>View</el-dropdown-item>
                         <el-dropdown-item>Add</el-dropdown-item>
-                            <el-dropdown-item>Delete</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
-                <span>Tom</span> -->
+                                                    <el-dropdown-item>Delete</el-dropdown-item>
+                                                </el-dropdown-menu>
+                                            </template>
+                                        </el-dropdown>
+                                        <span>Tom</span> -->
         </div>
     </div>
     <div class="menu-box">
@@ -82,10 +82,10 @@ const router = useRoute();
 const isCollapse = ref(false);
 const defaultActive = ref(router.name);
 const handleOpen = (key, keyPath) => {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
 }
 const handleClose = (key, keyPath) => {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
 }
 
 let url = "/v1/warning/serialnumber/KU2XbJhqzcwIm6FqYq5D";
@@ -120,6 +120,7 @@ const getMsg = () => {
 .nav-top {
     width: 100%;
     height: 60px;
+    background: #fff;
 
     .toolbar {
         display: inline-flex;
@@ -134,6 +135,7 @@ const getMsg = () => {
     width: 100%;
     height: calc(100% - 60px);
     display: flex;
+    background: #f7f9fc;
 
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 200px;
@@ -144,8 +146,14 @@ const getMsg = () => {
         width: calc(100% - 200px);
         flex: 1;
         height: calc(100% - 40px);
-        padding: 20px;
-        box-shadow: inset 0 2px 12px 0 rgb(0 0 0 / 10%);
+        margin: 10px;
+        padding: 10px;
+        background: #fff;
+        // box-shadow: inset 0 2px 12px 0 rgb(0 0 0 / 10%);
+    }
+
+    .el-menu {
+        border-right: 0px solid;
     }
 }
 </style>
