@@ -5,6 +5,13 @@
 */
 <template>
     <tab v-model:formParams="_this.fromParams" url="/prod-api/system/user/list" :row="row">
+        <!-- <template #caozuo>
+                                <h1>Here might be a page title</h1>
+                            </template> -->
+        <template #caozuo="scope">
+            <el-button link type="primary" size="small" @click="edit(scope.row)">编辑</el-button>
+            <el-button link type="primary" size="small">删除</el-button>
+        </template>
     </tab>
 </template>
 
@@ -43,10 +50,12 @@ const row = [
     {
         label: "创建时间",
         value: "createTime"
+    },
+    {
+        label: "操作",
+        openSlot: "caozuo"
     }
 ]
-let pageSize = ref(10);
-let pageNum = ref(1);
 let _this = reactive({
     fromParams: {
         userName: "",
@@ -54,8 +63,10 @@ let _this = reactive({
         pageNum: 1,
         pageSize: 20
     },
-    
 })
+const edit = (e) => {
+    console.log({ ...e }, 11111)
+}
 
 
 // import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router'

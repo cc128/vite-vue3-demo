@@ -28,8 +28,12 @@
                     </el-col>
                 </el-row>
             </el-form>
-            <el-table :data="_this.tableData" :style="{ width: '100%', height: height }" border class="tab">
-                <el-table-column v-for="(item, i) in row" :key="i" :prop="item.value" :label="item.label" />
+            <el-table :data="_this.tableData" :style="{ width: '100%', height: height }" class="tab"
+                :header-cell-style="{ background: '#efefef', color: '#333' }">
+                <el-table-column v-for="(item, i) in row" :key="i" :prop="item.value" :label="item.label"
+                    :align="item.align || 'center'" :width="item.width" :max-width="item.maxWidth">
+                    <slot v-if="item.openSlot" :name="item.openSlot || 'default'" :row="_this.tableData[i]" :index="i"></slot>
+                </el-table-column>
             </el-table>
         </div>
         <div class="el-pagination">
@@ -125,6 +129,10 @@ onMounted(() => {
     justify-content: space-between;
 
     .tab {}
+
+    .bg {
+        background: red;
+    }
 
     .el-pagination {
         display: flex;
