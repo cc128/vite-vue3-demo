@@ -6,8 +6,8 @@
 <template>
     <div class="tab-box">
         <div style="flex: 1;height: calc(100% - 32px);">
-            <el-form ref="form" :inline="true" :model="formParams" class="form-box">
-                <el-row>
+            <el-row>
+                <el-form ref="form" :inline="true" :model="formParams" class="form-box">
                     <el-col :span="24">
                         <el-form-item label="登录账号" prop="userName">
                             <el-input v-model="formParams.userName" placeholder="请输入登录账号" />
@@ -26,13 +26,16 @@
                             <el-button :icon="Download" plain type="warning" @click="exportList">导出</el-button>
                         </el-form-item>
                     </el-col>
-                </el-row>
-            </el-form>
+                </el-form>
+            </el-row>
             <el-table :data="_this.tableData" :style="{ width: '100%', height: height }" class="tab"
                 :header-cell-style="{ background: '#efefef', color: '#333' }">
                 <el-table-column v-for="(item, i) in row" :key="i" :prop="item.value" :label="item.label"
                     :align="item.align || 'center'" :width="item.width" :max-width="item.maxWidth">
-                    <slot v-if="item.openSlot" :name="item.openSlot || 'default'" :row="_this.tableData[i]" :index="i"></slot>
+                    <template #default="scope">
+                        <slot v-if="item.openSlot" :name="item.openSlot || 'default'" :row="scope.row" :key="scope.$index">
+                        </slot>
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
@@ -70,7 +73,7 @@ let getList = () => {
         total.value = res.total;
     })
 }
-getList();
+// getList();
 
 // 搜索
 const search = () => {
