@@ -7,7 +7,7 @@
     <div class="tab-box">
         <div style="flex: 1;height: calc(100% - 32px);">
             <el-form ref="form" :inline="true" :model="formParams" class="form-box">
-                {{ formParams }}
+                <!-- {{ formParams }} -->
                 <el-row>
                     <el-col :span="24">
                         <el-form-item v-for="(item, i) in formParams.form || []" :key="i" :label="item.label"
