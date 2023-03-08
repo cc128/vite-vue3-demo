@@ -6,29 +6,35 @@
 <template>
     <el-dialog v-model="props.dialogVisible" title="编辑" width="30%" draggable destroy-on-close :close-on-click-modal="false"
         :close-on-press-escape="false">
+        <!-- <slot name="qwe">111</slot> -->
         <el-form ref="dialogForm" :model="props.formParams" class="form-box" :rules="_this.rules">
             <el-row>
-                <colForm type="form" :formInfo="_this.formInfo" v-model:formParams="props.formParams"></colForm>
+                <colForm type="form" :formInfo="props.formInfo" v-model:formParams="props.formParams">
+                    <template #default="scope">
+                        <slot :row="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
+                    </template>
+                </colForm>
             </el-row>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
+                <el-button @click="dialogForm.resetFields()">重置</el-button>
                 <el-button @click="close">关闭</el-button>
                 <el-button type="primary" @click="confirm">确定</el-button>
-                <el-button type="primary" @click="close">重置</el-button>
             </span>
         </template>
     </el-dialog>
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
+import { ref, reactive, getCurrentInstance, onMounted, watch } from 'vue';
 import colForm from "./colForm.vue";
 
 let props = defineProps({
     dialogVisible: { type: Boolean, default: false },
     formInfo: { type: Object, default: {} },
-    formParams: { type: Object, default: {} }
+    formParams: { type: Object, default: {} },
+    type: { type: String, default: "form" },
 })
 
 const getRules = () => {
@@ -53,13 +59,12 @@ const getRules = () => {
 }
 
 let _this = reactive({
-    formInfo: JSON.parse(JSON.stringify(props.formInfo)),
     rules: getRules(),
 })
 
 let emit = defineEmits(["update:dialogVisible", "confirm", "close"])
 let dialogForm = ref(null);
-
+// 确定
 const confirm = () => {
     dialogForm.value.validate((valid, fields) => {
         if (valid) {
@@ -70,6 +75,7 @@ const confirm = () => {
         }
     })
 }
+// 关闭
 const close = () => {
     dialogForm.value.resetFields();
     emit("close", "");
@@ -78,10 +84,14 @@ const close = () => {
 // import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router'
 // const { ctx } = getCurrentInstance()
 // defineProps({})
-// watch('let', async (v1, v2) => { })
+// watch(props.formInfo, async (v1, v2) => {})
 // computed(() => { return })
-onMounted(() => {
-})
+
+// onMounted(() => {})
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-dialog__body {
+    padding-bottom: 0px !important;
+}
+</style>
