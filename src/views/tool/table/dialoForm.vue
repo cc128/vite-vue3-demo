@@ -6,12 +6,12 @@
 <template>
     <el-dialog v-model="props.dialogVisible" title="编辑" width="30%" draggable destroy-on-close :close-on-click-modal="false"
         :close-on-press-escape="false">
-        <!-- <slot name="qwe">111</slot> -->
         <el-form ref="dialogForm" :model="props.formParams" class="form-box" :rules="_this.rules">
             <el-row>
-                <colForm type="form" :formInfo="props.formInfo" v-model:formParams="props.formParams">
+                <colForm colType="form" :formInfo="props.formInfo" v-model:formParams="props.formParams">
                     <template #default="scope">
-                        <slot :row="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
+                        <slot v-if="isName" :name="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
+                        <slot v-else-if="!isName" :row="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
                     </template>
                 </colForm>
             </el-row>
@@ -34,7 +34,7 @@ let props = defineProps({
     dialogVisible: { type: Boolean, default: false },
     formInfo: { type: Object, default: {} },
     formParams: { type: Object, default: {} },
-    type: { type: String, default: "form" },
+    isName: { type: Boolean, default: true }, // 跨组件传值-用于区分slot
 })
 
 const getRules = () => {

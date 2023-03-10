@@ -6,22 +6,28 @@
 <template>
     <!-- {{ _this.postList }} -->
     <!-- {{ _this.formParams.status }} -->
-    <el-dropdown v-if="false" ref="dropdown1" trigger="contextmenu" style="margin-right: 30px">
-        <span class="el-dropdown-link"> Dropdown List1 </span>
-        <template #dropdown>
-            <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
-                <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                <el-dropdown-item divided>Action 5</el-dropdown-item>
-            </el-dropdown-menu>
-        </template>
-    </el-dropdown>
-    <dialoForm :title="title" v-model:dialogVisible="dialogVisible" v-model:formInfo="_this.modelParams.formInfo"
-        v-model:formParams="_this.formParams" @confirm="confirm">
+    <dialoForm v-if="dialogVisible" :title="title" v-model:dialogVisible="dialogVisible"
+        v-model:formInfo="_this.modelParams.formInfo" v-model:formParams="_this.formParams" @confirm="confirm">
         <template #form-deptId="scope">
-            777
+            <el-dropdown ref="dropdown1" trigger="contextmenu">
+                <div>
+                    {{ scope.form.deptId }}
+                    <el-input placeholder="请选择所属部门" class="el-dropdown-link" @focus="dropdown1.handleOpen()"></el-input>
+                </div>
+                <template #dropdown>
+                    <el-tree style="padding: 10px" :data="_this.deptList" :props="defaultProps" show-checkbox
+                        @node-click="handleNodeClick">
+                        <template #default="{ node, data }">
+                            <span class="custom-tree-node">
+                                <span
+                                    @click="(node.children && node.children.length) ? '' : scope.form.deptId = node.label">
+                                    {{ node.label }}
+                                </span>
+                            </span>
+                        </template>
+                    </el-tree>
+                </template>
+            </el-dropdown>
         </template>
     </dialoForm>
     <tab :modelParams="_this.modelParams" url="/system/user/list" :attributes="{ 'align': 'center' }">
@@ -52,6 +58,16 @@
 import tab from "./tab.vue"
 import dialoForm from "./dialoForm.vue"
 import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
+
+const defaultProps = {
+    children: 'children',
+    label: 'label',
+    value: "value"
+}
+const handleNodeClick = (data) => {
+    console.log(data, 1111)
+}
+
 let dropdown1 = ref(null);
 let GW = {
     label: "岗位",
@@ -70,6 +86,7 @@ let dialogVisible = ref(false);
 let title = ref("");
 let _this = reactive({
     postList: [],
+    deptList: [],
     modelParams: {
         formInfo: [
             {
@@ -320,6 +337,37 @@ const getPostList = (e) => {
         })
     })
 }
+const getDeptList = () => {
+    $fetch.get("/system/dept/list", { pageNum: 1, pageSize: 999 }).then(res => {
+        // res.data.forEach(e => {
+        //     e.children = res.data.filter(e2 => {
+        //         return e2.parentId == e.parentId
+        //     })
+        // })
+        let arr = [];
+        let setArr = (data, id) => {
+            data.forEach(e => {
+                // if (e.parentId == id) {
+                //     arr.push(e)
+                // } else {
+                //     setArr(e.deptId)
+                //     console.log(e,3333)
+                //     // setArr(res.data, 0)
+                }
+            });
+        }
+        setArr(res.data, 0)
+        console.log(arr, 11111)
+        // console.log(res.data, 1111)
+        _this.deptList = res.data.map(e => {
+            return {
+                label: e.deptName,
+                value: e.deptId
+            }
+        })
+    })
+
+}
 
 // import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router'
 // const { ctx } = getCurrentInstance()
@@ -328,10 +376,7 @@ const getPostList = (e) => {
 // computed(() => { return })
 onMounted(() => {
     getPostList(); // 获取岗位列表
-    // dropdown1.value.handleOpen()
-    // setTimeout(() => {
-    //     dropdown1.value.handleClose()
-    // }, 5000);
+    getDeptList(); // 获取部门列表
 })
 </script>
 

@@ -44,7 +44,7 @@
                 :page-sizes="pageSizes" background layout="total, sizes, prev, pager, next, jumper" :total="total"
                 @size-change="sizeChange" @current-change="currentChange" />
         </div>
-        <dialoForm :title="title" v-model:dialogVisible="dialogVisible" v-model:formInfo="modelParams.formInfo"
+        <dialoForm :title="title" :isName="false" v-model:dialogVisible="dialogVisible" v-model:formInfo="modelParams.formInfo"
             v-model:formParams="_this.dialoFormParams" @confirm="confirm">
             <template #default="scope">
                 <slot :name="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
