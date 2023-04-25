@@ -5,7 +5,7 @@
 */
 <template>
     <div class="tab-box">
-        <div style="flex: 1;height: calc(100% - 32px);">
+        <div style="flex: 1;height: 0;">
             <el-form ref="form" :inline="true" :model="_this.formParams" class="form-box">
                 <el-row>
                     <colForm :formInfo="modelParams.formInfo" v-model:formParams="_this.formParams">

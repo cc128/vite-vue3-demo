@@ -42,7 +42,10 @@ onMounted(() => {
     _this.ctx = _this.canvas.getContext("2d");
     _this.canvas.width = _this.canvas.parentNode.clientWidth;
     _this.canvas.height = _this.canvas.parentNode.clientHeight;
-
+    signatureBg()
+})
+// 签名背景
+let signatureBg = () => {
     let imgData = _this.ctx.getImageData(0, 0, _this.canvas.width, _this.canvas.height);
     let data = imgData.data;
     for (let i = 0; i < data.length; i += 4) {
@@ -54,7 +57,7 @@ onMounted(() => {
         }
     }
     _this.ctx.putImageData(imgData, 0, 0);
-    _this.ctx.lineWidth = 1;
+    // _this.ctx.lineWidth = 1;
 
     _this.ctx.globalAlpha = 0.3; // 透明度
     _this.ctx.font = "bold 16px '字体','字体','微软雅黑','宋体'"; //设置字体
@@ -75,7 +78,7 @@ onMounted(() => {
         }
         num += 6;
     }
-})
+}
 // 鼠标按下
 let mousedownF = (e) => {
     //左键
@@ -107,6 +110,7 @@ let clearCanvas = () => {
     _this.ctx.beginPath();
     _this.ctx.clearRect(0, 0, _this.canvas.parentNode.clientWidth, _this.canvas.parentNode.clientHeight);
     _this.ctx.closePath(); //可加入，可不加入
+    signatureBg()
 }
 // 保存签名
 let storage = () => {
@@ -117,7 +121,6 @@ let storage = () => {
     a.click();
     a.remove();
 }
-
 
 </script>
 

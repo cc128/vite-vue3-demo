@@ -12,7 +12,7 @@
             <el-dropdown ref="dropdown1" trigger="contextmenu">
                 <div>
                     {{ scope.form.deptId }}
-                    <el-input placeholder="请选择所属部门" class="el-dropdown-link" @focus="dropdown1.handleOpen()"></el-input>
+                    <el-input placeholder="请选择所属部门" class="el-dropdown-link" @click="dropdown1.handleOpen()"></el-input>
                 </div>
                 <template #dropdown>
                     <el-tree style="padding: 10px" :data="_this.deptList" :props="defaultProps" show-checkbox
@@ -289,7 +289,7 @@ let _this = reactive({
             }
         ],
         pageNum: 1,
-        pageSize: 10
+        pageSize: 20
     },
     formParams: {}
 })
@@ -313,7 +313,7 @@ const confirm = (e) => {
 }
 // 获取岗位名称
 const getPostName = (posts) => {
-    if (posts.length) {
+    if (posts?.length) {
         return posts.map(e => {
             if (_this.postList.length) {
                 let arr = _this.postList.filter((e2) => {
@@ -339,32 +339,25 @@ const getPostList = (e) => {
 }
 const getDeptList = () => {
     $fetch.get("/system/dept/list", { pageNum: 1, pageSize: 999 }).then(res => {
-        // res.data.forEach(e => {
-        //     e.children = res.data.filter(e2 => {
-        //         return e2.parentId == e.parentId
-        //     })
-        // })
-        let arr = [];
-        let setArr = (data, id) => {
-            data.forEach(e => {
-                // if (e.parentId == id) {
-                //     arr.push(e)
-                // } else {
-                //     setArr(e.deptId)
-                //     console.log(e,3333)
-                //     // setArr(res.data, 0)
+        let changeTree = (arr, parentId = '') => {
+            const newArr = []
+            arr.forEach(item => {
+                item.label = item.deptName;
+                item.value = item.deptId;
+                if (item.parentId === parentId) {
+                    // 找一级，pid相同的item添加到新数组
+                    newArr.push(item)
+                    // 找二级，再次调用函数
+                    const children = changeTree(arr, item.deptId)
+                    // console.log(children);
+                    if (children.length) {
+                        item.children = children
+                    }
                 }
-            });
+            })
+            return newArr
         }
-        setArr(res.data, 0)
-        console.log(arr, 11111)
-        // console.log(res.data, 1111)
-        _this.deptList = res.data.map(e => {
-            return {
-                label: e.deptName,
-                value: e.deptId
-            }
-        })
+        _this.deptList = changeTree(res.data, 0)
     })
 
 }
@@ -375,8 +368,8 @@ const getDeptList = () => {
 // watch('let', async (v1, v2) => { })
 // computed(() => { return })
 onMounted(() => {
-    getPostList(); // 获取岗位列表
-    getDeptList(); // 获取部门列表
+    // getPostList(); // 获取岗位列表
+    // getDeptList(); // 获取部门列表
 })
 </script>
 

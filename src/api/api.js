@@ -14,7 +14,7 @@ const reqFn = (as, method = "get") => {
             }
             url = url.replace("&", "?")
         }
-        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxNSIsInJuU3RyIjoiYTFOMHhieEN6T3ViWVZnajZ5Q2p2RjhpbldHM2k2NkUifQ.tbhJv5lVfMeT95izRIx6Sb08mTHn_B5TjtHGlLNZHv4"
+        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJTaTJweXZ2UkluS2J5R3BKMFdDM1A1eXN5YzZISDFyVSJ9.A1td6jozCvDs80ennEauDziGHIGx7NXQ-y3ZWUyJ_ZQ"
         if (!url.includes("/login")) {
             headers.Authorization = "Bearer " + token;
             headers.Cookie = "Admin-Token=" + token

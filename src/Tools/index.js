@@ -54,4 +54,53 @@ const downloadFile = (data, name, type) => {
         setF(data, name, type)
     }
 }
-export { baset64toFile, downloadImg, downloadFile }
+const watermark = (txt = "我是水印", wn = 8, hn = 6, color = "#000", deg = -20) => {
+    let body = document.body;
+    let Canvas = document.createElement("canvas");
+    Canvas.setAttribute("id", "watermark");
+    body.appendChild(Canvas);
+
+    let canvas = document.getElementById("watermark");
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.zIndex = '99999';
+    canvas.style.pointerEvents = 'none';
+    // canvas.style.opacity = '1';
+
+    let ctx = canvas.getContext("2d");
+    canvas.width = canvas.parentNode.clientWidth;
+    canvas.height = canvas.parentNode.clientHeight;
+
+    ctx.globalAlpha = 0.1; // 透明度
+    ctx.font = "14px '字体','字体','微软雅黑','宋体'"; //设置字体
+    ctx.fillStyle = color; //设置线的颜色状态
+
+
+    let left = canvas.width / wn;
+    let top = canvas.height / hn;
+    let leftCenter = (left - txt.length * 14) / 2;
+    let topCenter = (top - 14) / 2;
+    let n = 10;
+    for (let i = 0; i < hn; i++) {
+        for (let k = 0; k < wn; k++) {
+            ctx.save(); // 保存当前状态
+            ctx.translate(left * k + leftCenter, top * i + topCenter); //旋转中心的
+            ctx.rotate(Math.PI / 180 * deg);
+            ctx.fillText(txt, 0, 0); //设置文本内容
+            ctx.restore();// 恢复之前的状态
+        }
+    }
+    body.appendChild(canvas);
+    let setInt = setInterval(() => {
+        if (document.getElementById("watermark")) {
+            return
+        } else {
+            clearInterval(setInt)
+            watermark(txt, wn, hn, color)
+        }
+    }, 2000);
+}
+export { baset64toFile, downloadImg, downloadFile, watermark }
