@@ -29,7 +29,7 @@ export default defineConfig({
         open: true,
         proxy: {
             "^/api": {
-                target: "http://47.92.100.118:80",
+                target: "http://47.92.100.118:81",
                 changeOrigin: true, //开启代理
                 rewrite: (path) => path.replace(/^\/api/, "")
             }

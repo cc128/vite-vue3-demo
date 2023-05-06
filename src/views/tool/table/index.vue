@@ -9,31 +9,12 @@
     <dialoForm v-if="dialogVisible" :title="title" v-model:dialogVisible="dialogVisible"
         v-model:formInfo="_this.modelParams.formInfo" v-model:formParams="_this.formParams" @confirm="confirm">
         <template #form-deptId="scope">
-            <el-dropdown ref="dropdown1" trigger="contextmenu">
-                <div>
-                    {{ scope.form.deptId }}
-                    <el-input placeholder="请选择所属部门" class="el-dropdown-link" @click="dropdown1.handleOpen()"></el-input>
-                </div>
-                <template #dropdown>
-                    <el-tree style="padding: 10px" :data="_this.deptList" :props="defaultProps" show-checkbox
-                        @node-click="handleNodeClick">
-                        <template #default="{ node, data }">
-                            <span class="custom-tree-node">
-                                <span
-                                    @click="(node.children && node.children.length) ? '' : scope.form.deptId = node.label">
-                                    {{ node.label }}
-                                </span>
-                            </span>
-                        </template>
-                    </el-tree>
-                </template>
-            </el-dropdown>
+            <el-cascader v-model="scope.form.deptId" :options="_this.deptList" :props="defaultProps" />
+
         </template>
     </dialoForm>
     <tab :modelParams="_this.modelParams" url="/system/user/list" :attributes="{ 'align': 'center' }">
-        <template #form-deptId="scope">
-            99999
-        </template>
+        <template #form-deptId="scope"></template>
         <template #query-status="scope"></template>
         <template #list-postIds="scope">
             <el-tag v-for="(item, i) in getPostName(scope.row.postIds)" :key="i">{{ item }}</el-tag>
@@ -62,7 +43,10 @@ import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
 const defaultProps = {
     children: 'children',
     label: 'label',
-    value: "value"
+    value: "value",
+    expandTrigger: "hover",
+    emitPath: false,
+    checkStrictly: true
 }
 const handleNodeClick = (data) => {
     console.log(data, 1111)
@@ -82,11 +66,32 @@ let GW = {
     slotName: "postIds",
     option: []
 };
+let BM = {
+    label: "所属部门",
+    value: "deptId",
+    elType: "form",
+    type: "selectTree",
+    formCol: 12,
+    formSort: 2,
+    slotName: "deptId",
+    option: []
+}
+let JS = {
+    label: "角色",
+    value: "roleIds",
+    elType: "form",
+    type: "select",
+    multiple: true,
+    formSort: 8,
+    slotName: "roleIds",
+    option: []
+}
 let dialogVisible = ref(false);
 let title = ref("");
 let _this = reactive({
-    postList: [],
-    deptList: [],
+    postList: [], // 岗位
+    deptList: [], // 部门
+    roleList: [], // 角色
     modelParams: {
         formInfo: [
             {
@@ -113,79 +118,9 @@ let _this = reactive({
                 value: "dept.deptName",
                 elType: "list",
             },
-            {
-                label: "所属部门",
-                value: "deptId",
-                elType: "form",
-                type: "selectTree",
-                formCol: 12,
-                formSort: 2,
-                slotName: "deptId",
-                tree: [
-                    {
-                        label: 'Level one 1',
-                        children: [
-                            {
-                                label: 'Level two 1-1',
-                                children: [
-                                    {
-                                        label: 'Level three 1-1-1',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        label: 'Level one 2',
-                        children: [
-                            {
-                                label: 'Level two 2-1',
-                                children: [
-                                    {
-                                        label: 'Level three 2-1-1',
-                                    },
-                                ],
-                            },
-                            {
-                                label: 'Level two 2-2',
-                                children: [
-                                    {
-                                        label: 'Level three 2-2-1',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        label: 'Level one 3',
-                        children: [
-                            {
-                                label: 'Level two 3-1',
-                                children: [
-                                    {
-                                        label: 'Level three 3-1-1',
-                                    },
-                                ],
-                            },
-                            {
-                                label: 'Level two 3-2',
-                                children: [
-                                    {
-                                        label: 'Level three 3-2-1',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ]
-            },
+            BM,
             GW,
-            {
-                label: "角色",
-                value: "roleName",
-                elType: "form",
-                formSort: 8,
-            },
+            JS,
             {
                 label: "备注",
                 value: "remark",
@@ -298,13 +233,13 @@ const edit = (e) => {
     dialogVisible.value = true;
     $fetch.get(`/system/user/${e.userId}`).then(res => {
         let { user, postIds, posts, roleIds } = res.data;
-        GW.option = posts.map(e => {
-            return {
-                label: e.postName,
-                value: e.postId
-            }
-        })
-        _this.formParams = { ...res.data.user, postIds };
+        // GW.option = posts.map(e => {
+        //     return {
+        //         label: e.postName,
+        //         value: e.postId
+        //     }
+        // })
+        _this.formParams = { ...res.data.user, postIds, roleIds };
 
     })
 }
@@ -335,8 +270,10 @@ const getPostList = (e) => {
                 value: e.postId
             }
         })
+        GW.option = _this.postList;
     })
 }
+// 获取部门列表
 const getDeptList = () => {
     $fetch.get("/system/dept/list", { pageNum: 1, pageSize: 999 }).then(res => {
         let changeTree = (arr, parentId = '') => {
@@ -358,8 +295,20 @@ const getDeptList = () => {
             return newArr
         }
         _this.deptList = changeTree(res.data, 0)
+        BM.option = _this.deptList
     })
-
+}
+// 获取角色列表
+const getRoletList = () => {
+    $fetch.get("/system/role/list", { pageNum: 1, pageSize: 999 }).then(res => {
+        _this.roleList = res.rows.map(e => {
+            return {
+                label: e.roleName,
+                value: e.roleId
+            }
+        })
+        JS.option = _this.roleList;
+    })
 }
 
 // import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router'
@@ -368,9 +317,30 @@ const getDeptList = () => {
 // watch('let', async (v1, v2) => { })
 // computed(() => { return })
 onMounted(() => {
-    // getPostList(); // 获取岗位列表
-    // getDeptList(); // 获取部门列表
+    getPostList(); // 获取岗位列表
+    getDeptList(); // 获取部门列表
+    getRoletList();// 获取角色列表
 })
 </script>
 
 <style lang="scss" scoped></style>
+<!-- <el-dropdown ref="dropdown1" trigger="contextmenu">
+    <div>
+        {{ scope.form.deptId }}
+        <el-input placeholder="请选择所属部门" class="el-dropdown-link" @click="dropdown1.handleOpen()"></el-input>
+    </div>
+    <template #dropdown>
+        <el-tree style="padding: 10px" :data="_this.deptList" :props="defaultProps" show-checkbox
+            node-key="value" :default-checked-keys="[scope.form.deptId]" @node-click="handleNodeClick">
+            <template #default="{ node, data }">
+                <span class="custom-tree-node">
+                    <span
+                        @click="(node.children && node.children.length) ? '' : scope.form.deptId = node.label">
+                        {{ node.label }}
+                    </span>
+                    <span>&nbsp;&nbsp;</span>
+                </span>
+            </template>
+        </el-tree>
+    </template>
+</el-dropdown> -->

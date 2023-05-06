@@ -5,7 +5,7 @@
 */
 <template>
     <el-dialog v-model="props.dialogVisible" title="编辑" width="30%" draggable destroy-on-close :close-on-click-modal="false"
-        :close-on-press-escape="false">
+        :close-on-press-escape="false" @close="close">
         <el-form ref="dialogForm" :model="props.formParams" class="form-box" :rules="_this.rules">
             <el-row>
                 <colForm colType="form" :formInfo="props.formInfo" v-model:formParams="props.formParams">

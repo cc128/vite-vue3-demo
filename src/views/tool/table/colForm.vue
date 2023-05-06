@@ -20,6 +20,9 @@
                     <el-option v-for="item in item.option" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
+                <el-cascader v-else-if="item.type && item.type == 'selectTree'" v-model="formParams[item.value]"
+                    :options="item.option" :props="defaultProps" />
+
                 <!-- <slot v-else-if="!!useSlots()[type + '-' + item.value]" :name="type + '-' + item.value" :form="formParams" :placeholder="item.label"></slot> -->
                 <el-input v-else v-model="formParams[item.value]" :type="item.type" :placeholder="'请输入' + item.label"
                     clearable :style="item.style || { width: '100%' }" />
@@ -39,6 +42,16 @@ let props = defineProps({
 let _this = reactive({
     formQuery: [], // 表格显示数据
 })
+
+const defaultProps = {
+    children: 'children',
+    label: 'label',
+    value: "value",
+    expandTrigger: "hover",
+    emitPath: false,
+    checkStrictly: true
+}
+
 const setMsg = () => {
     _this.formQuery = props.formInfo.filter((e) => {
         return (!e.elType || (e.elType && e.elType.includes(props.colType)))
