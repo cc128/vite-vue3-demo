@@ -6,27 +6,29 @@
 <template>
     <div class="tab-box">
         <div style="flex: 1;height: 0;">
-            <el-form ref="form" :inline="true" :model="_this.formParams" class="form-box">
-                <el-row>
-                    <colForm :formInfo="modelParams.formInfo" v-model:formParams="_this.formParams">
-                        <template #default="scope">
-                            <slot :name="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
-                        </template>
-                    </colForm>
-                    <el-col :span="4">
-                        <el-form-item>
-                            <el-button type="primary" :icon="Search" @click="search">搜索</el-button>
-                            <el-button :icon="Refresh" plain @click="resetForm">重置</el-button>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item>
-                            <el-button :icon="Plus" plain type="primary" @click="add">新增</el-button>
-                            <el-button :icon="Download" plain type="warning" @click="exportFile">导出</el-button>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-            </el-form>
+            <div ref="form">
+                <el-form :inline="true" :model="_this.formParams" class="form-box">
+                    <el-row>
+                        <colForm :formInfo="modelParams.formInfo" v-model:formParams="_this.formParams">
+                            <template #default="scope">
+                                <slot :name="scope.row" :form="scope.form" :placeholder="scope.placeholder"></slot>
+                            </template>
+                        </colForm>
+                        <el-col :span="4">
+                            <el-form-item>
+                                <el-button type="primary" :icon="Search" @click="search">搜索</el-button>
+                                <el-button :icon="Refresh" plain @click="resetForm">重置</el-button>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-form-item>
+                                <el-button :icon="Plus" plain type="primary" @click="add">新增</el-button>
+                                <el-button :icon="Download" plain type="warning" @click="exportFile">导出</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
             <el-table :data="_this.tableData" :style="{ width: '100%', height: height }" class="tab"
                 :header-cell-style="{ background: '#e7f9f9', color: '#333' }" v-bind="attributes || {}">
                 <el-table-column v-for="(item, i) in _this.tableHead" :key="i" :prop="item.value" :label="item.label"
@@ -149,12 +151,14 @@ onMounted(() => {
     })
     // 计算表格高度
     let geth = () => {
-        let h = document.querySelector(".form-box");
-        if (h) {
-            return h.clientHeight
-        } else {
-            return 0
-        }
+        // let h = document.querySelector(".form-box");
+        // if (h) {
+        //     return h.clientHeight
+        // } else {
+        //     return 0
+        // }
+        console.log(form.value?.clientHeight || 0, 444444)
+        return form.value?.clientHeight || 0
     }
     height.value = `calc(100% - ${geth() + 10}px)`;
     window.addEventListener("resize", () => {

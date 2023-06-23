@@ -54,8 +54,20 @@ const downloadFile = (data, name, type) => {
         setF(data, name, type)
     }
 }
-const watermark = (txt = "我是水印", wn = 8, hn = 6, color = "#000", deg = -20) => {
-    let body = document.body;
+// 水印
+const watermark = (params = {}) => {
+    let p = {
+        txt: "我是水印", // 水印文字
+        fontSize: 14,
+        txtCol: 8, // 文字列数
+        txtRow: 6, // 文字行数
+        txtColor: "#000", // 文字颜色
+        txtDeg: -20, // 文字旋转角度
+        el: null,
+        txtOpacity: 0.1,
+        ...params
+    }
+    let body = p.el || document.body;
     let Canvas = document.createElement("canvas");
     Canvas.setAttribute("id", "watermark");
     body.appendChild(Canvas);
@@ -74,22 +86,20 @@ const watermark = (txt = "我是水印", wn = 8, hn = 6, color = "#000", deg = -
     canvas.width = canvas.parentNode.clientWidth;
     canvas.height = canvas.parentNode.clientHeight;
 
-    ctx.globalAlpha = 0.1; // 透明度
-    ctx.font = "14px '字体','字体','微软雅黑','宋体'"; //设置字体
-    ctx.fillStyle = color; //设置线的颜色状态
+    ctx.globalAlpha = p.txtOpacity; // 透明度
+    ctx.font = `${p.fontSize}px '字体','字体','微软雅黑','宋体'`; //设置字体
+    ctx.fillStyle = p.txtColor; //设置线的颜色状态
 
-
-    let left = canvas.width / wn;
-    let top = canvas.height / hn;
-    let leftCenter = (left - txt.length * 14) / 2;
-    let topCenter = (top - 14) / 2;
-    let n = 10;
-    for (let i = 0; i < hn; i++) {
-        for (let k = 0; k < wn; k++) {
+    let left = canvas.width / p.txtCol;
+    let top = canvas.height / p.txtRow;
+    let leftCenter = (left - p.txt.length * p.fontSize) / 2;
+    let topCenter = (top - p.fontSize) / 2;
+    for (let i = 0; i < p.txtRow; i++) {
+        for (let k = 0; k < p.txtCol; k++) {
             ctx.save(); // 保存当前状态
             ctx.translate(left * k + leftCenter, top * i + topCenter); //旋转中心的
-            ctx.rotate(Math.PI / 180 * deg);
-            ctx.fillText(txt, 0, 0); //设置文本内容
+            ctx.rotate(Math.PI / 180 * p.txtDeg);
+            ctx.fillText(p.txt, 0, 0); //设置文本内容
             ctx.restore();// 恢复之前的状态
         }
     }
@@ -99,7 +109,7 @@ const watermark = (txt = "我是水印", wn = 8, hn = 6, color = "#000", deg = -
             return
         } else {
             clearInterval(setInt)
-            watermark(txt, wn, hn, color)
+            watermark(p.txt, p.txtCol, hn, p.txtColor)
         }
     }, 2000);
 }
